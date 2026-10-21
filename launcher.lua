@@ -1,4 +1,5 @@
 --[[ Launcher3D v3 — Loader (Fix Local Limit) ]]
+print(">>> ЗАГРУЖЕН НОВЫЙ ЛОАДЕР (БЕЗ LOCAL) <<<")
 
 local REPO   = "jeka-5670/Visualesered"
 local BRANCH = "main"
@@ -35,7 +36,7 @@ end
 
 local source = table.concat(parts, "\n\n")
 
--- Убираем слово "local", чтобы обойти лимит в 200 переменных
+-- Убираем слово "local" из всех модулей, чтобы обойти лимит в 200 переменных
 source = string.gsub(source, "%f[%a]local%f[%A]", "")
 
 local chunk, cErr = loadstring(source)

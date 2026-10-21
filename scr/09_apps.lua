@@ -205,6 +205,36 @@ RUN.perf = function(c)
 	end
 	draw()
 end
+RUN.config = function(c)
+	local function draw()
+		reset(c)
+		label(c, "📁 Сохранения и Конфиги", 22, "text", nil, UDim2.new(1, 0, 0, 30), true)
+		local tb = new("TextBox", {Size = UDim2.new(1, 0, 0, 40), BackgroundColor3 = col("card2"), TextColor3 = col("text"), PlaceholderText = "Имя конфига (например: my_settings)", Text = "", Font = Enum.Font.Gotham, BorderSizePixel = 0}, c)
+		round(tb, 10)
+		new("UIPadding", {PaddingLeft = UDim.new(0, 10)}, tb)
+		row(c, {
+			{"💾 Сохранить", function()
+				if writefile then
+					local cfg = {}
+					for k, v in pairs(S) do
+						if type(v) ~= "table" and type(v) ~= "userdata" and type(v) ~= "function" then cfg[k] = v end
+					end
+					writefile("L3D_" .. tb.Text .. ".json", game:GetService("HttpService"):JSONEncode(cfg))
+					warn("Конфиг сохранен!")
+				else warn("Твой инжектор не поддерживает сохранения (writefile)") end
+			end},
+			{"📂 Загрузить", function()
+				if readfile and isfile and isfile("L3D_" .. tb.Text .. ".json") then
+					local data = game:GetService("HttpService"):JSONDecode(readfile("L3D_" .. tb.Text .. ".json"))
+					for k, v in pairs(data) do if S[k] ~= nil then S[k] = v end end
+					applyAll(); drawSettings(); draw()
+					warn("Конфиг успешно загружен!")
+				else warn("Конфиг с таким именем не найден") end
+			end, true}
+		})
+	end
+	draw()
+end
 RUN.time = function(c)
 	local v = label(c, "", 26, "text", nil, UDim2.new(1, 0, 0, 40), true)
 	local function showV() v.Text = "Время: " .. string.format("%02d:00", math.floor(Lighting.ClockTime)) end

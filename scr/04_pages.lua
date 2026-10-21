@@ -25,7 +25,14 @@ new("UIListLayout", {FillDirection = Enum.FillDirection.Horizontal, Padding = UD
 new("UIPadding", {PaddingLeft = UDim.new(0, 8), PaddingRight = UDim.new(0, 8)}, tabsBG)
 for _, t in ipairs({{"home", "Главная"}, {"set", "Настройки"}, {"info", "Инфо"}, {"close", "✕ Скрыть"}}) do
 	local k = t[1]
-	local b, eb, et = button(tabsBG, t[2], function() if k == "close" then setOpen(false) else show(k) end end, UDim2.new(0.25, -8, 0, 40), true)
+	local b, eb, et = button(tabsBG, t[2], function()
+        if k == "close" then
+            setOpen(false)
+        else
+            if k == "set" then pcall(drawSettings) end -- Принудительно рисуем настройки
+            show(k)
+        end
+    end, UDim2.new(0.25, -8, 0, 40), true)
 	if k ~= "close" then tabBtns[k] = b; tabE[k] = eb; tabT[k] = et end
 end
 

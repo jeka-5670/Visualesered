@@ -1,4 +1,4 @@
---[[ Launcher3D v3 — Защищённый Loader ]]
+--[[ Launcher3D v3 — Loader (Fix Local Limit) ]]
 
 local REPO   = "jeka-5670/Visualesered"
 local BRANCH = "main"
@@ -30,11 +30,14 @@ for _, name in ipairs(FILES) do
         warn(tostring(body))
         return 
     end
-    -- Добавляем 2 переноса строки, чтобы следующий файл начинался с новой строки
     parts[#parts + 1] = "-- >>> " .. FOLDER .. name .. "\n" .. body .. "\n\n"
 end
 
 local source = table.concat(parts, "\n\n")
+
+-- Убираем слово "local", чтобы обойти лимит в 200 переменных
+source = string.gsub(source, "%f[%a]local%f[%A]", "")
+
 local chunk, cErr = loadstring(source)
 
 if not chunk then

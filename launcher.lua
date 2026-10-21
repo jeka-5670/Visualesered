@@ -1,4 +1,4 @@
---[[ Launcher3D v3 — FINAL LOADER ]]
+--[[ Launcher3D v3 — ULTIMATE FIX ]]
 print(">>> ЗАГРУЖЕН ФИНАЛЬНЫЙ ЛОАДЕР (100% РАБОТАЕТ) <<<")
 
 local REPO   = "jeka-5670/Visualesered"
@@ -12,41 +12,30 @@ local FILES = {
     "12_button.lua", "13_settings.lua", "14_main.lua"
 }
 
-local function fetchFile(name)
-    local path = FOLDER .. name
-    local url = "https://raw.githubusercontent.com/" .. REPO .. "/refs/heads/" .. BRANCH .. "/" .. path
-    local ok, res = pcall(function() return game:HttpGet(url, true) end)
-    if not ok or type(res) ~= "string" or res:find("404: Not Found") then
-        error("[Launcher3D] Ошибка скачивания файла: " .. path)
-    end
-    return res
-end
-
 local parts = {}
 for _, name in ipairs(FILES) do
-    local ok, body = pcall(fetchFile, name)
-    if not ok then
-        warn(tostring(body))
-        return 
+    local url = "https://raw.githubusercontent.com/" .. REPO .. "/refs/heads/" .. BRANCH .. "/" .. FOLDER .. name
+    local ok, res = pcall(function() return game:HttpGet(url, true) end)
+    if not ok or type(res) ~= "string" or res:find("404: Not Found") then
+        warn("[Launcher3D] Ошибка скачивания файла: " .. name)
+        return
     end
-    parts[#parts + 1] = "-- >>> " .. FOLDER .. name .. "\n" .. body .. "\n\n"
+    parts[#parts + 1] = res
 end
 
 local source = table.concat(parts, "\n\n")
 
--- ФИКС: Добавляем = nil туда, где его не было, чтобы код не сломался
-source = source:gsub("local content", "content = nil")
+-- ИСПРАВЛЕНИЕ ОШИБКИ 'Expected =': Добавляем = nil туда, где его не было
+source = source:gsub("local setOpen, applyAll, applyView, applyButton, applyHud, drawSettings", "setOpen, applyAll, applyView, applyButton, applyHud, drawSettings = nil, nil, nil, nil, nil, nil")
 source = source:gsub("local flyBV, flyBG", "flyBV, flyBG = nil, nil")
 source = source:gsub("local tpos, tsnap", "tpos, tsnap = nil, nil")
 
--- ФИКС: Убираем local у всего остального, чтобы обойти лимит в 200 переменных
+-- ИСПРАВЛЕНИЕ ЛИМИТА 200: Убираем слово local у всего остального
 source = source:gsub("local ", "")
 
-local chunk, cErr = loadstring(source)
-
+local chunk, err = loadstring(source)
 if not chunk then
-    warn("[Launcher3D] Ошибка в коде одного из модулей:\n" .. tostring(cErr))
+    warn("[Launcher3D] Ошибка компиляции:\n" .. tostring(err))
     return
 end
-
 chunk()

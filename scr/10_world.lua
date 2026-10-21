@@ -104,6 +104,8 @@ local function applyChar()
 end
 conn(lp.CharacterAdded, function(ch)
 	ch:WaitForChild("HumanoidRootPart"); task.wait(0.3)
+    local h = ch:FindFirstChildOfClass("Humanoid")
+    if h then h.PlatformStand = false end -- Сбрасываем зависание
 	flyBV, flyBG = nil, nil; spectating = false
 	applyChar()
 end)

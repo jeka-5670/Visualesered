@@ -128,4 +128,4 @@ local function updateEsp()
 		if not alivePl[string.sub(o.Name, 4)] then o:Destroy() end
 	end
 end
-task.spawn(function() while alive do pcall(updateEsp); task.wait(0.25) end end)08_effects.lua
+task.spawn(function() while alive do pcall(updateEsp); task.wait(0.25) end end)

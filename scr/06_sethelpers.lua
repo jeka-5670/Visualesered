@@ -1,7 +1,9 @@
 ---------------------------------------------------------------- помощники настроек (общие для вкладки и приложений)
 local function reset(c)
 	for _, ch in ipairs(c:GetChildren()) do
-		if not ch:IsA("UIListLayout") then ch:Destroy() end
+		if not ch:IsA("UIListLayout") then 
+            pcall(function() ch:Destroy() end) 
+        end
 	end
 end
 local function head(c, t) label(c, t, 13, "sub", nil, UDim2.new(1, 0, 0, 18), true) end

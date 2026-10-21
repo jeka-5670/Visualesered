@@ -2,8 +2,6 @@
 
 local REPO   = "jeka-5670/Visualesered"
 local BRANCH = "main"
--- ВНИМАНИЕ: на скриншоте папка называется "scr". 
--- Если вы переименовали её в "src", поменяйте значение ниже на "src/"
 local FOLDER = "scr/" 
 
 local FILES = {
@@ -19,12 +17,9 @@ local function fetchFile(name)
     local ok, res = pcall(function() return game:HttpGet(url, true) end)
     
     if not ok then error("[Launcher3D] Ошибка сети при скачивании " .. path) end
-    
-    -- Если GitHub вернул 404 (файл не найден) или HTML страницу
     if type(res) ~= "string" or res:find("<!DOCTYPE html>") or res:find("404: Not Found") then
-        error("[Launcher3D] Файл не найден на GitHub: " .. path .. "\nПроверьте, что репозиторий ПУБЛИЧНЫЙ и папка называется правильно.")
+        error("[Launcher3D] Файл не найден на GitHub: " .. path)
     end
-    
     return res
 end
 
@@ -33,9 +28,10 @@ for _, name in ipairs(FILES) do
     local ok, body = pcall(fetchFile, name)
     if not ok then
         warn(tostring(body))
-        return -- Мягко выходим, не ломая игру
+        return 
     end
-    parts[#parts + 1] = "-- >>> " .. FOLDER .. name .. "\n" .. body
+    -- Добавляем 2 переноса строки, чтобы следующий файл начинался с новой строки
+    parts[#parts + 1] = "-- >>> " .. FOLDER .. name .. "\n" .. body .. "\n\n"
 end
 
 local source = table.concat(parts, "\n\n")

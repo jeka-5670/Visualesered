@@ -1,4 +1,4 @@
---[[ Launcher3D v3 — ULTIMATE FIX ]]
+--[[ Launcher3D v3 — FINAL LOADER ]]
 print(">>> ЗАГРУЖЕН ФИНАЛЬНЫЙ ЛОАДЕР (100% РАБОТАЕТ) <<<")
 
 local REPO   = "jeka-5670/Visualesered"
@@ -25,12 +25,11 @@ end
 
 local source = table.concat(parts, "\n\n")
 
--- ИСПРАВЛЕНИЕ ОШИБКИ 'Expected =': Добавляем = nil туда, где его не было
-source = source:gsub("local setOpen, applyAll, applyView, applyButton, applyHud, drawSettings", "setOpen, applyAll, applyView, applyButton, applyHud, drawSettings = nil, nil, nil, nil, nil, nil")
-source = source:gsub("local flyBV, flyBG", "flyBV, flyBG = nil, nil")
-source = source:gsub("local tpos, tsnap", "tpos, tsnap = nil, nil")
-
--- ИСПРАВЛЕНИЕ ЛИМИТА 200: Убираем слово local у всего остального
+-- УМНЫЙ ФИКС: Добавляем = nil переменным, у которых его не было
+source = source:gsub("local ([%w_, ]+)\n", "%1 = nil\n")
+-- Убираем local у функций
+source = source:gsub("local function", "function")
+-- Убираем оставшиеся local (у переменных со знаком =)
 source = source:gsub("local ", "")
 
 local chunk, err = loadstring(source)
